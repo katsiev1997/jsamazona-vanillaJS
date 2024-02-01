@@ -1,12 +1,21 @@
-import data from "../data.js";
 
 const HomeScreen = {
-  render: () => {
-    const { products } = data;
+  render: async () => {
+    const response = await fetch("http://localhost:5000/api/products", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response || !response.ok) {
+      return `<div>Error in getting data</div>`;
+    }
+    const products = await response.json();
     return `
         <ul class="products"> 
-            ${products.map((product) =>
-              `
+            ${products
+              .map(
+                (product) =>
+                  `
               <li>
                 <div class="product">
                   <a href="/#/product/${product._id}">
@@ -20,7 +29,8 @@ const HomeScreen = {
                 <div class="product-price">$${product.price}</div>
               </li>
             `
-            ).join("\n")}
+              )
+              .join("\n")}
         </ul>
         `;
   },
