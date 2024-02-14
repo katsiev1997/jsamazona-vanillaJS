@@ -4,6 +4,7 @@ import data from "./data";
 import mongoose from "mongoose";
 import config from "./config";
 import userRouter from "./routers/userRouter";
+import bodyParser from "body-parser";
 
 mongoose
   .connect(config.MONGODB_URL, {
@@ -15,8 +16,9 @@ mongoose
   .catch((error) => console.log(error));
 const app = express();
 
+app.use(bodyParser.json());
 app.use(cors());
-app.use('/api', userRouter)
+app.use("/api/users", userRouter);
 app.get("/api/products", (req, res) => {
   res.send(data.products);
 });
@@ -27,6 +29,11 @@ app.get("/api/products/:id", (req, res) => {
   } else {
     res.status(404).send({ message: "Product not found" });
   }
+});
+
+app.use((err, req, res, next) => {
+  const status = err.name && err.name === "ValidationError" ? 400 : 500;
+  res.status(status).send({ message: err.message });
 });
 
 app.listen(5000, () => {
