@@ -26,19 +26,19 @@ userRouter.get(
 userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
-    const signinUser = await User.findOne({
+    const user = await User.findOne({
       email: req.body.email,
       password: req.body.password,
     });
-    if (!signinUser) {
+    if (!user) {
       res.status(401).send({ message: "Invalid Email or Password" });
     } else {
       res.send({
-        _id: signinUser._id,
-        name: signinUser.name,
-        email: signinUser.email,
-        isAdmin: signinUser.isAdmin,
-        token: generateToken(signinUser),
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: generateToken(user),
       });
     }
   })
