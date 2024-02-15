@@ -1,3 +1,5 @@
+import { getCartItems } from "./localStorage";
+
 export const parseRequestUrl = () => {
   const url = document.location.hash.toLowerCase();
   const request = url.split("/");
@@ -17,9 +19,11 @@ export const rerender = async (component) => {
 export const showLoading = () => {
   document.getElementById("loading-overlay").classList.add("active");
 };
+
 export const hideLoading = () => {
   document.getElementById("loading-overlay").classList.remove("active");
 };
+
 export const showMessage = (message, callback) => {
   document.getElementById("message-overlay").innerHTML = `
     <div>
@@ -36,4 +40,12 @@ export const showMessage = (message, callback) => {
         callback();
       }
     });
+};
+
+export const redirectUser = () => {
+  if (getCartItems().length !== 0) {
+    document.location.hash = "/shipping";
+  } else {
+    document.location.hash = "/";
+  }
 };
