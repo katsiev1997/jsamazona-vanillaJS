@@ -66,6 +66,7 @@ export const register = async ({ name, email, password }) => {
     return { error: error.response.data.message || error.message };
   }
 };
+
 export const update = async ({ name, email, password }) => {
   try {
     const { _id, token } = getUserInfo();
@@ -89,5 +90,29 @@ export const update = async ({ name, email, password }) => {
   } catch (error) {
     console.log(error);
     return { error: error.response.data.message || error.message };
+  }
+};
+
+export const createOrder = async (order) => {
+  try {
+    const { token } = getUserInfo();
+    const response = await axios({
+      url: `${apiUrl}/api/orders`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      data: order,
+    });
+    if (response.status !== 200) {
+      throw new Error(response.data.message);
+    }
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return {
+      error: error.response ? error.response.data.message : error.message,
+    };
   }
 };
